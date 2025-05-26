@@ -1,6 +1,6 @@
 <h1>Docs & protocols management system</h1>
 
-Lightweight backend project for managing documents and protocols.
+Spring-boot oriented lightweight backend project for managing documents and protocols.
 
 <h3>What do you need for run</h3>
 
