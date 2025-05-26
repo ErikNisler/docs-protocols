@@ -15,8 +15,12 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+  security:
+    user:
+      name: admin
+      password: admin
+      role: USER
 
-security:
-  username: admin
-  password: admin
-  role: USER
+logging:
+  level:
+    org.springframework.security: DEBUG

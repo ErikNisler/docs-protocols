@@ -51,8 +51,7 @@ public class ProtocolController {
     public ResponseEntity<?> update(@PathVariable("id") Long id,
                        @RequestBody @Valid ProtocolStateRequest protocolStateRequest) {
         try {
-            ProtocolState protocolState = protocolStateRequest.protocolState();
-            ProtocolDto result = protocolService.update(id, protocolState);
+            ProtocolDto result = protocolService.update(id, protocolStateRequest);
             return ResponseEntity.ok(result);
         } catch (NoSuchElementException ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
