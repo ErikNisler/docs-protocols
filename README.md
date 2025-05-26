@@ -8,6 +8,7 @@ Lightweight backend project for managing documents and protocols.
 - Docker desktop
 - IDE (Looking into the project)
 - SQL Tool (DBeaver)
+- OPTIONAL - Postman (for testing endpoints)
 - OPTIONAL - Maven 3.8.7
 
 <h3>How to run it?</h3>
