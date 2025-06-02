@@ -13,11 +13,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -34,6 +35,48 @@ public class DocumentServiceTest {
     @BeforeEach
     void setup() {
         MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    void getDocuments_notFound() {
+        when(documentRepository.findAll()).thenReturn(Collections.emptyList());
+        List<DocumentDto> docs = documentService.getAll();
+
+        verify(documentMapper, never()).toDto(any());
+        assertEquals(Collections.emptyList(), docs);
+    }
+
+    @Test
+    void getDocuments() {
+        DocumentDto mockDocument = Mockito.mock(DocumentDto.class);
+        DocumentEntity mockEntity = Mockito.mock(DocumentEntity.class);
+        when(documentRepository.findAll()).thenReturn(List.of(mockEntity));
+        when(documentMapper.toDto(any())).thenReturn(mockDocument);
+        List<DocumentDto> docs = documentService.getAll();
+
+        assertNotNull(docs);
+        assertEquals(mockDocument, docs.getFirst());
+    }
+
+    @Test
+    void getDocument() {
+        DocumentDto mockDocument = Mockito.mock(DocumentDto.class);
+        DocumentEntity mockEntity = Mockito.mock(DocumentEntity.class);
+        when(documentRepository.findById(1L)).thenReturn(Optional.of(mockEntity));
+        when(documentMapper.toDto(any())).thenReturn(mockDocument);
+        DocumentDto doc = documentService.get(1L);
+
+        assertNotNull(doc);
+        assertEquals(mockDocument, doc);
+    }
+
+    @Test
+    void getDocument_notFound() {
+        when(documentRepository.findById(1L)).thenReturn(Optional.empty());
+        DocumentDto doc = documentService.get(1L);
+
+        assertNull(doc);
+        verify(documentMapper, never()).toDto(any());
     }
 
     @Test

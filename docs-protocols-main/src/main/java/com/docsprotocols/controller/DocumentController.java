@@ -6,8 +6,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -16,6 +18,32 @@ import java.util.NoSuchElementException;
 public class DocumentController {
 
     private final DocumentService documentService;
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> get(@PathVariable("id") Long id) {
+        try {
+            DocumentDto result = documentService.get(id);
+            if (result == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Not found");
+            }
+            return ResponseEntity.status(HttpStatus.CREATED).body(result);
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error: " + ex.getMessage());
+        }
+    }
+
+    @GetMapping
+    public ResponseEntity<?> get() {
+        try {
+            List<DocumentDto> result = documentService.getAll();
+            if (CollectionUtils.isEmpty(result)) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Not found");
+            }
+            return ResponseEntity.status(HttpStatus.CREATED).body(result);
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error: " + ex.getMessage());
+        }
+    }
 
     @PostMapping
     public ResponseEntity<?> create(@RequestBody @Valid DocumentDto documentDto) {

@@ -7,7 +7,10 @@ import com.docsprotocols.repository.DocumentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -17,6 +20,21 @@ public class DocumentService {
 
     private final DocumentRepository documentRepository;
     private final DocumentMapper documentMapper;
+
+    @Transactional
+    public DocumentDto get(Long id) {
+        Optional<DocumentEntity> documentEntity = documentRepository.findById(id);
+        return documentEntity.map(documentMapper::toDto).orElse(null);
+    }
+
+    @Transactional
+    public List<DocumentDto> getAll() {
+        List<DocumentEntity> documentEntities = documentRepository.findAll();
+        if (CollectionUtils.isEmpty(documentEntities)) {
+            return Collections.emptyList();
+        }
+        return documentEntities.stream().map(documentMapper::toDto).toList();
+    }
 
     @Transactional
     public DocumentDto create(DocumentDto documentDto) {

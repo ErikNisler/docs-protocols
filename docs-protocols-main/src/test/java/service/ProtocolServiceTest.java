@@ -18,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,6 +40,44 @@ public class ProtocolServiceTest {
     private DocumentEntity documentEntity;
     private ProtocolDto protocolDto;
     private ProtocolEntity protocolEntity;
+
+    @Test
+    void getProtocols_notFound() {
+        when(protocolRepository.findAll()).thenReturn(Collections.emptyList());
+        List<ProtocolDto> protocols = protocolService.getAll();
+
+        verify(protocolMapper, never()).toDto(any());
+        assertEquals(Collections.emptyList(), protocols);
+    }
+
+    @Test
+    void getProtocols() {
+        when(protocolRepository.findAll()).thenReturn(List.of(protocolEntity));
+        when(protocolMapper.toDto(any())).thenReturn(protocolDto);
+        List<ProtocolDto> protocols = protocolService.getAll();
+
+        assertNotNull(protocols);
+        assertEquals(protocolDto, protocols.getFirst());
+    }
+
+    @Test
+    void getProtocol() {
+        when(protocolRepository.findById(1L)).thenReturn(Optional.of(protocolEntity));
+        when(protocolMapper.toDto(any())).thenReturn(protocolDto);
+        ProtocolDto result = protocolService.get(1L);
+
+        assertNotNull(result);
+        assertEquals(protocolDto, result);
+    }
+
+    @Test
+    void getProtocol_notFound() {
+        when(protocolRepository.findById(1L)).thenReturn(Optional.empty());
+        ProtocolDto result = protocolService.get(1L);
+
+        assertNull(result);
+        verify(protocolMapper, never()).toDto(any());
+    }
 
     @BeforeEach
     void setup() {
